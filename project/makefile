@@ -1,6 +1,5 @@
 all:
-	rm -f *.o main encode decode
-	gcc -o main main.c rsa.c	
+	rm -f *.o encode decode
 	gcc -o client client.c -w
 	gcc -o server server.c rsa.c -w
 clean:

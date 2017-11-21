@@ -11,7 +11,7 @@ int main(int argc,char* argv[])
 	char sendbuf[512], recvbuf[512]; 
 	char mode[8];
 	strcpy(mode,argv[1]);
-	printf("%s\n", mode);
+	printf("Mode da chon: %s\n", mode);
 	//-----Khai bao dia chi server-------------
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = inet_addr("127.0.0.1");

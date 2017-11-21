@@ -18,7 +18,7 @@ void guifile(int clisock, char* filename){
 		    FILE *fs = fopen(fs_name, "r");
 		    if(fs == NULL)
 		    {
-		        fprintf(stderr, "ERROR: File %s not found on server. (errno = %d)\n", fs_name, errno);
+		        fprintf(stderr, "Loi: File %s khong ton tai, Ma loi = %d\n", fs_name, errno);
 				exit(1);
 		    }
 
@@ -34,9 +34,10 @@ void guifile(int clisock, char* filename){
 		        bzero(sendbuf, 512);
 		    }
 		    printf("Da gui lai file cho client!\n");
+		    printf("--------------------------------------------------------\n");
+			printf("<Doi ket noi tiep theo tu client>\n");
 		    close(clisock);
 			system("rm -f server-file/*");
-
 			exit(0);
 }
 int main()
@@ -74,11 +75,10 @@ int main()
 		clisock = accept(srvsock, (struct sockaddr*)&client, (socklen_t*)&sock_size);
 		
 		recv(clisock, mode, 512, 0); // de nhan yeu cau encode hay decode
-		printf("Mode: %s\n", mode);
 		
 	if ((pid=fork())==0){
 		close(srvsock);
-		printf("--------------------------------------------------------\n");
+		printf("#######################################################\n");
 		procid = getpid();
 		printf("Client co procid = %d da tham gia ket noi\n",procid);
 		
@@ -87,7 +87,7 @@ int main()
 		char* fr_name = "server-file/server_rcv_tmp.txt";
 		FILE *fr = fopen(fr_name, "a");
 		if(fr == NULL)
-			printf("File %s Cannot be opened file on server.\n", fr_name);
+			printf("Khong the mo file %s tren server\n", fr_name);
 		else
 		{
 			bzero(recvbuf, 512); 
@@ -97,7 +97,7 @@ int main()
 			    int write_sz = fwrite(recvbuf, sizeof(char), fr_block_sz, fr);
 				if(write_sz < fr_block_sz)
 			    {
-			        error("File write failed on server.\n");
+			        error("Khong ghi duoc file tren server\n");
 			    }
 				bzero(recvbuf, 512);
 				if (fr_block_sz == 0 || fr_block_sz != 512) 
@@ -110,7 +110,7 @@ int main()
 		    {
 		        if (errno == EAGAIN)
 	        	{
-	                printf("recv() timed out.\n");
+	                printf("recv() timed out\n");
 	            }
 	            else
 	            {
@@ -123,27 +123,22 @@ int main()
 			fclose(fr); 
 		}
 		
-
+		printf("--------------------------------------------------------\n");
 		//Chay ham ma hoa va giai ma
-		
+		printf("Thuc hien quy trinh %s:\n",mode);
 		x=atoi("testx");
 			printf("p=%d, q=%d, n=%d, m=%d, e=%d, d=%d, u=%d\n",_rsa.p,_rsa.q,_rsa.n,_rsa.m,_rsa.e,_rsa.d,_rsa.u);			
 			y=rsa_encode(x,_rsa);
 			printf(" %d -->: %d -->: %d\n",x,y,rsa_decode(y,_rsa));
 		if(strcmp(mode,"encode")==0){
-		printf("Yeu cau encode\n");
 		ma_hoa(_rsa,"server-file/server_rcv_tmp.txt");
 		guifile(clisock,"encode");	
 		}
 		
 		if(strcmp(mode,"decode")==0){ 
-		printf("Yeu cau decode\n");
 		giai_ma(_rsa,"server-file/server_rcv_tmp.txt");
 		guifile(clisock,"decode");	
 		}
-
-		printf("--------------------------------------------------------\n");
-		printf("<Doi ket noi tiep theo tu client>\n");
 			
 		}
 
