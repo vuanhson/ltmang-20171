@@ -4,8 +4,11 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
+
 int main(int argc,char* argv[])
 {
+	time_t my_time;
 	struct sockaddr_in server;
 	int clisock;
 	char sendbuf[512], recvbuf[512]; 
@@ -14,8 +17,8 @@ int main(int argc,char* argv[])
 	printf("Mode da chon: %s\n", mode);
 	//-----Khai bao dia chi server-------------
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    server.sin_port = htons(2311);
+    server.sin_addr.s_addr = inet_addr(argv[3]);
+    server.sin_port = htons(atoi(argv[4]));
 	//-----socket()-------
 	clisock = socket (AF_INET,SOCK_STREAM,0);
 
@@ -51,11 +54,22 @@ int main(int argc,char* argv[])
 		//Nhan File tu server gui ve lai
 		printf("-----------------------------------------\n");
 		printf("Nhan file tu server va luu lai: \n");
-		char* fr_name = "client-file/ketqua.txt";
+
+		time(&my_time);
+		struct tm* tm_info;
+		char time_buffer[26];
+		tm_info = localtime(&my_time);
+		strftime(time_buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info); //format time trong filename
+
+		char file_name[255] = "";
+		snprintf( file_name, sizeof(file_name), "%s%s%s", "client-file/ketqua_",time_buffer, ".txt");
+		printf("%s\n", file_name);
+
+		char* fr_name = file_name;
 		FILE *fr = fopen(fr_name, "a");
 			if(fr == NULL)
 			printf("File %s khong doc duoc\n", fr_name);
-	else{
+			else{
 			bzero(recvbuf, 512); 
 			int fr_block_sz = 0;
 	   		while((fr_block_sz = recv(clisock, recvbuf, 512, 0)) > 0)
@@ -82,7 +96,7 @@ int main(int argc,char* argv[])
 				fprintf(stderr, "recv() loi, ma loi: %d\n", errno);
 			}
 		}
-	    printf("Ok da nhan lai file tu phia server, file duoc luu trong thu muc client-file/ketqua.txt!\n");
+	    printf("Ok da nhan lai file tu phia server, file duoc luu tai: %s\n",fr_name);
 	    fclose(fr);
 	}
 

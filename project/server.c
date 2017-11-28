@@ -13,6 +13,8 @@
 void guifile(int clisock, char* filename){
 	char sendbuf[500];
 	printf("--------------------------------------------------------\n");
+	//time_t now = time(0);
+	//printf("%s\n", now);
 		    char* fs_name = filename;
 		    printf("Gui file %s toi client...\n", fs_name);
 		    FILE *fs = fopen(fs_name, "r");
@@ -40,7 +42,7 @@ void guifile(int clisock, char* filename){
 			system("rm -f server-file/*");
 			exit(0);
 }
-int main()
+int main(int argc,char* argv[])
 {
 	int srvsock,clisock,bindret,sock_size,check_client_status,procid;
 	struct sockaddr_in client, server;
@@ -54,7 +56,8 @@ int main()
 	//-----Khai bao thong so server--------
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY;
-	server.sin_port = htons(2311);
+    server.sin_port = htons(atoi(argv[1]));
+	
 	//-----socket()-------
 	srvsock = socket (AF_INET,SOCK_STREAM,0);
 	if (srvsock == -1){
@@ -127,7 +130,7 @@ int main()
 		//Chay ham ma hoa va giai ma
 		printf("Thuc hien quy trinh %s:\n",mode);
 		x=atoi("testx");
-			printf("p=%d, q=%d, n=%d, m=%d, e=%d, d=%d, u=%d\n",_rsa.p,_rsa.q,_rsa.n,_rsa.m,_rsa.e,_rsa.d,_rsa.u);			
+			printf("Khoa cong khai: (n=%d, e=%d)\n",_rsa.n,_rsa.e);			
 			y=rsa_encode(x,_rsa);
 			printf(" %d -->: %d -->: %d\n",x,y,rsa_decode(y,_rsa));
 		if(strcmp(mode,"encode")==0){
