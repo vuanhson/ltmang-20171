@@ -63,8 +63,7 @@ int main(int argc,char* argv[])
 
 		char file_name[255] = "";
 		snprintf( file_name, sizeof(file_name), "%s%s%s", "client-file/ketqua_",time_buffer, ".txt");
-		printf("%s\n", file_name);
-
+		
 		char* fr_name = file_name;
 		FILE *fr = fopen(fr_name, "a");
 			if(fr == NULL)
